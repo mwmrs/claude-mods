@@ -14,6 +14,7 @@ import {
 } from './logic'
 
 const COLLAPSED_KEY = 'isCollapsed'
+const TTL_KEY = 'ttl'
 const NO_CONTEXT: ContextFill = {
   percent: null,
   thresholdPercent: FALLBACK_THRESHOLD,
@@ -22,6 +23,7 @@ const NO_CONTEXT: ContextFill = {
 
 const lastAt = atom({ plugin: 'context-bar', key: 'lastAt' } as const, null)
 const ttl = atom({ plugin: 'context-bar', key: 'ttl' } as const, null)
+const isTtlRead = atom({ plugin: 'context-bar', key: 'isTtlRead' } as const, false)
 const hitRate = atom({ plugin: 'context-bar', key: 'hitRate' } as const, null)
 const context = atom({ plugin: 'context-bar', key: 'context' } as const, NO_CONTEXT)
 const isCollapsed = atom({ plugin: 'context-bar', key: 'isCollapsed' } as const, false)
@@ -75,6 +77,8 @@ const readTtl = async ($: Engine, path: string) => {
   const found: CacheTtl | null = ttlOf(tail)
   if (found !== null) {
     await update($, ttl, () => found)
+    await update($, isTtlRead, () => true)
+    await $.store.set(TTL_KEY, found).catch(() => undefined)
   }
 }
 
@@ -129,6 +133,11 @@ export const register: Register = on => {
     const stored = await $.store.get(COLLAPSED_KEY).catch(() => undefined)
     if (typeof stored === 'boolean') {
       await update($, isCollapsed, () => stored)
+    }
+    // Until this session's transcript says otherwise, the TTL last read anywhere.
+    const known = await $.store.get(TTL_KEY).catch(() => undefined)
+    if ((known === '5m' || known === '1h') && (await read($, ttl)) === null) {
+      await update($, ttl, () => known)
     }
     await measure($).catch(() => undefined)
 
@@ -206,6 +215,7 @@ export const register: Register = on => {
     const fill = await read($, context)
     const rate = await read($, hitRate)
     const cacheTtl = await read($, ttl)
+    const ttlMark = (await read($, isTtlRead)) ? '' : '?'
     const collapsed = await read($, isCollapsed)
     const now = await $.clock.now()
     // What the plugins beneath draw in the band stays, above this row.
@@ -252,7 +262,7 @@ export const register: Register = on => {
             </Text>
             <Text dimColor>{'□'.repeat(CELLS - (cache?.filled ?? 0))}</Text>
           </Text>
-          <Text dimColor>({cacheTtl ?? '5m?'})</Text>
+          <Text dimColor>({`${cacheTtl ?? '5m'}${ttlMark}`})</Text>
         </Box>
         <Text>Cache-Hit {rate === null ? '–' : `${Math.round(rate)} %`}</Text>
         <Text>{sky}</Text>

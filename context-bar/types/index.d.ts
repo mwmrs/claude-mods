@@ -14,6 +14,8 @@ declare module 'claude-code' {
     'context-bar': {
       lastAt: number | null
       ttl: CacheTtl | null
+      /** False while `ttl` is an earlier session's, not read off this transcript. */
+      isTtlRead: boolean
       hitRate: number | null
       context: ContextFill
       isCollapsed: boolean

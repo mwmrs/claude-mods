@@ -145,3 +145,18 @@ test('Compact compacts when idle, queues /compact while working, and logs the su
   await $.session.compact({ trigger: 'manual', messages: [{ role: 'user', text: 'hi', toolUses: [] }] })
   expect(logs[0]).toBe('Compact: 150.000 Tokens vorher → 12.000 Tokens nachher')
 })
+
+test('without a readable transcript the TTL last read in any session is used, marked as assumed', async ($, on) => {
+  mock.clock(on, { now: 1_000_000 })
+  mock.store(on, { ttl: '1h' })
+  on('ui.render', { component: 'AbovePrompt' }, ($$, e) => h($$.ui.resolve(e).Text, {}, 'beneath') as never)
+  on('session.usage', () => ({ value: usage(60_000) }) as never)
+  on('session.start', (_, e) => ({ cwd: e.cwd }) as never)
+  on('turn.complete', () => ({ text: 'ok' }))
+  await $.session.start({ source: 'startup', cwd: '/tmp' } as never)
+  await $.turn.complete(TURN)
+
+  const ui = await $.ui.mount({ ...BAND, surface: 'terminal' })
+  expect((await ui.find({ type: 'Text', text: /^Cache/ }))?.text).toBe('Cache 60 min')
+  expect(await ui.find({ type: 'Text', text: /^\(1h\?\)$/ })).toBeDefined()
+})
