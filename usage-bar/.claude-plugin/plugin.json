@@ -1,0 +1,7 @@
+{
+  "name": "usage-bar",
+  "version": "0.1.0",
+  "description": "Zeile über dem Eingabefeld: Plan-Verbrauch im 5-Stunden- und Wochenfenster mit Balken, Prozent und Reset-Zeit",
+  "author": { "name": "Meinolf Wiemers" },
+  "types": "./types/index.d.ts"
+}

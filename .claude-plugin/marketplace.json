@@ -1,0 +1,8 @@
+{
+  "name": "mwmrs-mods",
+  "owner": { "name": "Meinolf Wiemers" },
+  "plugins": [
+    { "name": "context-bar", "source": "./context-bar" },
+    { "name": "usage-bar", "source": "./usage-bar" }
+  ]
+}
