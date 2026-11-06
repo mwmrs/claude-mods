@@ -3,5 +3,6 @@
   "version": "0.1.0",
   "description": "Leiste über dem Eingabefeld: Prompt-Cache-Restzeit, Cache-Hit-Rate, Kontextfüllung mit Wetter und ein Compact-Button",
   "author": { "name": "Meinolf Wiemers" },
+  "license": "MIT",
   "types": "./types/index.d.ts"
 }
