@@ -1,6 +1,6 @@
 # claude-mods
 
-Persönliche Mods für Claude Code. Der Ordner ist ein Marketplace (`.claude-plugin/marketplace.json`).
+Persönliche Mods für Claude Code. Das Repo ist ein Marketplace (`.claude-plugin/marketplace.json`).
 
 | Mod | Was er zeigt |
 | --- | --- |
@@ -9,11 +9,30 @@ Persönliche Mods für Claude Code. Der Ordner ist ein Marketplace (`.claude-plu
 
 ## Installation
 
+Den Marketplace direkt aus GitHub einbinden, damit er nicht von einem lokalen Ordner abhängt:
+
 ```bash
-claude plugin marketplace add ~/claude-mods
+claude plugin marketplace add mwmrs/claude-mods
 claude plugin install context-bar@mwmrs-mods -s user
 claude plugin install usage-bar@mwmrs-mods -s user
 ```
+
+Bei einem privaten Repo braucht Git Zugriff darauf (z. B. über `gh auth login`). Neue Versionen holen:
+
+```bash
+claude plugin marketplace update mwmrs-mods
+```
+
+### Lokal entwickeln
+
+Zum Arbeiten an den Mods stattdessen einen festen Klon als Marketplace eintragen. Wird der Ordner verschoben oder gelöscht, verschwinden die Mods aus Claude Code.
+
+```bash
+git clone https://github.com/mwmrs/claude-mods.git ~/claude-mods
+claude plugin marketplace add ~/claude-mods
+```
+
+Wechsel zwischen beiden Varianten: vorher `claude plugin marketplace remove mwmrs-mods`.
 
 ## Prüfen
 
