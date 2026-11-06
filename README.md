@@ -21,3 +21,11 @@ claude plugin install usage-bar@mwmrs-mods -s user
 claude plugin validate ./context-bar
 claude plugin test ./context-bar
 ```
+
+## Lizenz
+
+[MIT](LICENSE) © 2026 Meinolf Wiemers
+
+Die Mods enthalten keinen fremden Code und bündeln keine Abhängigkeiten. Sie nutzen zur Laufzeit nur die Plugin-API von Claude Code (`claude-code`, `claude-code/testing`); deren Typen erzeugt Claude Code beim Laden und sie bleiben per `.gitignore` außerhalb des Repos. Claude Code selbst steht unter den Bedingungen von Anthropic, nicht unter dieser Lizenz.
+
+Kein offizielles Projekt von Anthropic. „Claude“ und „Claude Code“ sind Marken von Anthropic, PBC.
